@@ -1,0 +1,22 @@
+import React from "react";
+import { cn } from "@/functions";
+
+interface Props {
+    className?: string;
+    children: React.ReactNode;
+}
+
+const Wrapper = ({ children, className }: Props) => {
+    return (
+        <div
+            className={cn(
+                "size-full mx-auto max-w-[1920px] ",
+                className
+            )}
+        >
+            {children}
+        </div>
+    )
+};
+
+export default Wrapper
