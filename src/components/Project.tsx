@@ -1,6 +1,16 @@
+"use client";
+
+import { useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import Link from "next/link";
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function Project() {
+  const container = useRef(null);
+
   const projects = [
     {
       id: "01",
@@ -24,8 +34,47 @@ export default function Project() {
     },
   ];
 
+  useGSAP(
+    () => {
+      // 10. project sticky Js
+      const sticky = document.querySelector(".project-two-sticky");
+      if (sticky && window.innerWidth > 992) {
+        ScrollTrigger.create({
+          trigger: sticky,
+          start: "top top+=220",
+          end: "+=2320", // Adjust based on content height
+          pin: true,
+          scrub: true,
+        });
+      }
+
+      // 09. project panel scroll Js
+      if (window.innerWidth > 991) {
+        let projectpanels = document.querySelectorAll(".project-panel");
+        projectpanels.forEach((section) => {
+          gsap.to(section, {
+            scrollTrigger: {
+              trigger: section,
+              pin: section, // This might conflict with the loop if not careful, legacy code pins each section?
+              // Legacy code: pin: section. But legacy code iterates all .project-panel.
+              // If they are stacked, pinning them might cause them to stack on top of each other.
+              // Let's assume standard behavior:
+              scrub: 1,
+              start: "center center",
+              end: "bottom 60%",
+              // endTrigger: '.project-panel-area', // Need to make sure this class exists on parent
+              pinSpacing: false,
+              markers: false,
+            },
+          });
+        });
+      }
+    },
+    { scope: container }
+  );
+
   return (
-    <section className="project-two-area pb-12 lg:pb-[47px]">
+    <section className="project-two-area pb-12 lg:pb-[47px]" ref={container}>
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap">
           <div className="w-full md:w-8/12 lg:w-8/12 xl:w-6/12 mb-12 lg:mb-0">

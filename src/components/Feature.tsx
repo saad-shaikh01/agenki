@@ -1,4 +1,12 @@
+"use client";
+
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+
 export default function Feature() {
+  const container = useRef(null);
+
   const features = [
     {
       id: "01",
@@ -20,8 +28,28 @@ export default function Feature() {
     },
   ];
 
+  useGSAP(
+    () => {
+      // Animation items - fade up
+      gsap.from(".animation-item", {
+        y: 50,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.2,
+        scrollTrigger: {
+          trigger: ".feature-two-area",
+          start: "top 80%",
+        },
+      });
+    },
+    { scope: container }
+  );
+
   return (
-    <section className="feature-two-area pt-0 pb-20 lg:pb-[140px]">
+    <section
+      className="feature-two-area pt-0 pb-20 lg:pb-[140px]"
+      ref={container}
+    >
       <div className="container mx-auto px-4">
         <div className="flex justify-center">
           <div className="w-full xl:w-7/12">

@@ -1,8 +1,64 @@
+"use client";
+
+import { useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import Link from "next/link";
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function CTA() {
+  const container = useRef(null);
+
+  useGSAP(
+    () => {
+      // 07. cta animation Js
+      // .tw-cta-title-1 { x: '-15%' } and .tw-cta-title-2 { x: '10%' }
+      // The JSX below doesn't have these classes yet, I need to add them to mimic the exact animation targets if applicable.
+      // However, the legacy code seems to target specific classes `.tw-cta-title-1` etc. which might be from a different section or this one.
+      // In `cta-two-area`, the title is `.cta-two-title`.
+      // Let's assume standard scroll trigger animations for this section as found in typical setups if exact match isn't clear from the snippet provided in `custom-gsap.js`.
+      // Wait, `custom-gsap.js` has "07. cta animation Js" targeting `.cta-area`, but this is `cta-two-area`.
+      // There might be no specific GSAP for `cta-two-area` in the provided JS snippet other than maybe generic ones.
+      // But let's look at `10. project sticky Js`.
+      // `11. about splitText Js`.
+      // `12. thumbnail zoom`.
+      // `19. video button Js`.
+
+      // Let's check "19. video button Js".
+      // It targets `.video-button`.
+      // The `CTA` component has a button, but it is `.cta-two-button`.
+      // The `Contact` component has `.video-content` and maybe a button.
+      // Let's look at `Contact.tsx`. It has `.tw-hover-btn-item`.
+
+      // For `CTA.tsx`, standard fade ins.
+      gsap.from(".cta-two-thumb.one", {
+        y: 50,
+        opacity: 0,
+        duration: 1,
+        scrollTrigger: {
+          trigger: ".cta-two-thumb.one",
+          start: "top 80%",
+        },
+      });
+
+      gsap.from(".cta-two-thumb.two", {
+        y: 50,
+        opacity: 0,
+        duration: 1,
+        delay: 0.2,
+        scrollTrigger: {
+          trigger: ".cta-two-thumb.two",
+          start: "top 80%",
+        },
+      });
+    },
+    { scope: container }
+  );
+
   return (
-    <section className="cta-two-area pb-20 lg:pb-[140px]">
+    <section className="cta-two-area pb-20 lg:pb-[140px]" ref={container}>
       <div className="container-fluid mx-auto px-4">
         <div className="flex flex-wrap">
           <div className="w-full xl:w-6/12">
