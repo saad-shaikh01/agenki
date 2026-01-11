@@ -5,56 +5,19 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import Link from "next/link";
+import { useSplitTextAnimation } from "@/hooks/useSplitTextAnimation";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function About() {
   const container = useRef(null);
 
+  // Apply split text animation to titles
+  useSplitTextAnimation(".section-two-title");
+
   useGSAP(
     () => {
-      // Counter animation logic using ScrollTrigger and standard GSAP
-      // Legacy code used 'odometer' but we can replicate with GSAP text tweening or just let it be static for now if odometer isn't installed.
-      // However, the prompt asked for "exact animations". The legacy code uses `odometer` for counters, not GSAP.
-      // But Section title animation (01) is GSAP.
-      // "01. Section title Animation Js" uses SplitText which is paid.
-      // I will implement a standard fade-up stagger for the title as a fallback if I can't use SplitText.
-      // Wait, "exact animations" might mean I should try to approximate the SplitText effect.
-      // I can split text manually or use a simple character stagger.
-
-      // Title Animation
-      const title = document.querySelector(".section-two-title");
-      if (title) {
-        // Simple manual split for animation since we don't have SplitText
-        const text = title.textContent || "";
-        title.innerHTML = text
-          .split(" ")
-          .map(
-            (word) =>
-              `<span class="inline-block"><span class="inline-block">${word}</span></span>`
-          )
-          .join(" "); // Simplification: Word split. Char split is too verbose without plugin.
-
-        // Actually, let's just do a simple stagger from bottom/opacity
-        gsap.fromTo(
-          ".section-two-title span span",
-          { y: 100, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 1,
-            stagger: 0.05,
-            scrollTrigger: {
-              trigger: ".section-two-title",
-              start: "top 90%",
-              end: "bottom 60%",
-              toggleActions: "play none none none",
-            },
-          }
-        );
-      }
-
-      // About Two Paragraph Animation (Not explicitly in the custom-gsap.js list but often animated)
+      // About Two Paragraph Animation
       gsap.from(".about-two-paragraph", {
         opacity: 0,
         y: 20,
@@ -64,12 +27,6 @@ export default function About() {
           start: "top 90%",
         },
       });
-
-      // Arrow Animation (using CSS in legacy, but maybe GSAP here?)
-      // Legacy uses `.banner-arrow-animation` which is CSS `bounce-shape1`.
-      // I already added that in Tailwind config.
-
-      // Image Reveal/Parallax could be added if requested, but let's stick to the list.
     },
     { scope: container }
   );
@@ -87,13 +44,26 @@ export default function About() {
           </div>
           <div className="w-full xl:w-7/12">
             <div className="section-two-wrapper">
-              <h2 className="section-two-title text-[50px] md:text-[60px] lg:text-[80px] xl:text-[5rem] leading-[0.98] text-white font-heading font-semibold">
-                Discover the Passionate Team Behind Our Creative Ideas, Strategy,
-                and Stunning Visual Solutions
+              <h2 className="section-two-title text-[50px] md:text-[60px] lg:text-[80px] xl:text-[5rem] leading-[0.98] text-white font-heading font-semibold tw-char-animation">
+                {/* Manual split for animation */}
+                <span className="inline-block"><span className="inline-block">Discover</span></span>{" "}
+                <span className="inline-block"><span className="inline-block">the</span></span>{" "}
+                <span className="inline-block"><span className="inline-block">Passionate</span></span>{" "}
+                <span className="inline-block"><span className="inline-block">Team</span></span>{" "}
+                <span className="inline-block"><span className="inline-block">Behind</span></span>{" "}
+                <span className="inline-block"><span className="inline-block">Our</span></span>{" "}
+                <span className="inline-block"><span className="inline-block">Creative</span></span>{" "}
+                <span className="inline-block"><span className="inline-block">Ideas,</span></span>{" "}
+                <span className="inline-block"><span className="inline-block">Strategy,</span></span>{" "}
+                <span className="inline-block"><span className="inline-block">and</span></span>{" "}
+                <span className="inline-block"><span className="inline-block">Stunning</span></span>{" "}
+                <span className="inline-block"><span className="inline-block">Visual</span></span>{" "}
+                <span className="inline-block"><span className="inline-block">Solutions</span></span>
               </h2>
             </div>
           </div>
         </div>
+        {/* ... Rest of the component (Team, Counters, etc.) ... */}
         <div className="flex flex-wrap items-center">
           <div className="w-full sm:w-8/12 md:w-4/12 lg:w-4/12 xl:w-3/12 mb-12 md:mb-0">
             <div>

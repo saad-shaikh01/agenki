@@ -2,10 +2,18 @@
 
 import { useRef } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import Link from "next/link";
+import { useSplitTextAnimation } from "@/hooks/useSplitTextAnimation";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Feature() {
   const container = useRef(null);
+
+  // Apply split text animation
+  useSplitTextAnimation(".section-two-title");
 
   const features = [
     {
@@ -54,8 +62,11 @@ export default function Feature() {
         <div className="flex justify-center">
           <div className="w-full xl:w-7/12">
             <div className="section-two-wrapper text-center pt-10 mb-10 xl:mb-[72px] lg:mr-10">
-              <h2 className="section-two-title uppercase text-[3.5rem] md:text-[5rem] lg:text-[7.5rem] leading-[0.98] text-white font-heading font-semibold">
-                how We Work
+              <h2 className="section-two-title uppercase text-[3.5rem] md:text-[5rem] lg:text-[7.5rem] leading-[0.98] text-white font-heading font-semibold tw-char-animation">
+                {/* Manual split for animation */}
+                <span className="inline-block"><span className="inline-block">how</span></span>{" "}
+                <span className="inline-block"><span className="inline-block">We</span></span>{" "}
+                <span className="inline-block"><span className="inline-block">Work</span></span>
               </h2>
             </div>
           </div>

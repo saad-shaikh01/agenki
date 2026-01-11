@@ -5,11 +5,15 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import Link from "next/link";
+import { useSplitTextAnimation } from "@/hooks/useSplitTextAnimation";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Project() {
   const container = useRef(null);
+
+  // Apply split text animation
+  useSplitTextAnimation(".section-two-title");
 
   const projects = [
     {
@@ -52,17 +56,16 @@ export default function Project() {
       if (window.innerWidth > 991) {
         let projectpanels = document.querySelectorAll(".project-panel");
         projectpanels.forEach((section) => {
+          gsap.set(section, { scale: 1 }); // Ensure initial state
           gsap.to(section, {
+            scale: 0.8, // 04. portfolio panel Js says scale: .8
             scrollTrigger: {
               trigger: section,
-              pin: section, // This might conflict with the loop if not careful, legacy code pins each section?
-              // Legacy code: pin: section. But legacy code iterates all .project-panel.
-              // If they are stacked, pinning them might cause them to stack on top of each other.
-              // Let's assume standard behavior:
+              pin: section,
               scrub: 1,
-              start: "center center",
-              end: "bottom 60%",
-              // endTrigger: '.project-panel-area', // Need to make sure this class exists on parent
+              start: "top 20%", // Matches 04. portfolio panel Js
+              end: "bottom 100%",
+              // endTrigger: '.project-panel-area',
               pinSpacing: false,
               markers: false,
             },
@@ -80,8 +83,12 @@ export default function Project() {
           <div className="w-full md:w-8/12 lg:w-8/12 xl:w-6/12 mb-12 lg:mb-0">
             <div className="project-two-sticky sticky top-24 mb-10 xl:mb-[40px]">
               <div className="section-two-wrapper mb-8 lg:mr-10">
-                <h2 className="section-two-title uppercase text-[3.5rem] md:text-[5rem] lg:text-[7.5rem] text-white font-heading font-semibold leading-[0.98]">
-                  view our completed recent projects
+                <h2 className="section-two-title uppercase text-[3.5rem] md:text-[5rem] lg:text-[7.5rem] text-white font-heading font-semibold leading-[0.98] tw-char-animation">
+                  <span className="inline-block"><span className="inline-block">view</span></span>{" "}
+                  <span className="inline-block"><span className="inline-block">our</span></span>{" "}
+                  <span className="inline-block"><span className="inline-block">completed</span></span>{" "}
+                  <span className="inline-block"><span className="inline-block">recent</span></span>{" "}
+                  <span className="inline-block"><span className="inline-block">projects</span></span>
                 </h2>
               </div>
               <div className="project-two-wrap flex flex-col xl:flex-row gap-7">

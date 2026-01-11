@@ -1,6 +1,13 @@
+"use client";
+
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import Link from "next/link";
 
 export default function Service() {
+  const container = useRef<HTMLDivElement>(null);
+
   const services = [
     {
       id: "01",
@@ -24,8 +31,49 @@ export default function Service() {
     },
   ];
 
+  useGSAP(
+    () => {
+      // 08. hover reveal for image Js
+      const hoverItems = document.querySelectorAll(".hover__reveal-item");
+
+      hoverItems.forEach((item) => {
+        const bg = item.querySelector(".hover__reveal-bg") as HTMLElement;
+        if (!bg) return;
+
+        item.addEventListener("mousemove", (e: any) => {
+          const rect = item.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          // The legacy code used setInterval but GSAP quickSetter or standard to is better/smoother
+          // Legacy: hoverItem.children[index].style.transform = `translate(${x}px, ${y}px)`;
+          // The bg is absolutely positioned.
+
+          gsap.to(bg, {
+            x: x,
+            y: y,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        });
+
+        item.addEventListener("mouseenter", () => {
+            gsap.to(bg, { autoAlpha: 1, duration: 0.3 });
+        });
+
+        item.addEventListener("mouseleave", () => {
+            gsap.to(bg, { autoAlpha: 0, duration: 0.3 });
+        });
+      });
+    },
+    { scope: container }
+  );
+
   return (
-    <section className="service-two-area py-[240px] pb-[140px]">
+    <section
+      className="service-two-area py-[240px] pb-[140px]"
+      ref={container}
+    >
       <div className="container mx-auto px-4">
         <div className="w-full xl:w-4/12">
           <div className="mb-20">
@@ -40,9 +88,11 @@ export default function Service() {
               {services.map((service, index) => (
                 <div
                   key={index}
-                  className={`service-two-item wt-widget__item hover__reveal-item relative border-b border-white/10 group ${index === 0 ? 'current' : ''}`}
+                  className={`service-two-item wt-widget__item hover__reveal-item relative border-b border-white/10 group ${
+                    index === 0 ? "current" : ""
+                  }`}
                 >
-                  <Link href="#" className="block">
+                  <Link href="#" className="block relative z-10">
                     <div className="service-two-content flex items-center justify-between p-[26px_28px] transition-all duration-300">
                       <h3 className="service-two-title text-stroke-white text-[3.5rem] md:text-[7.5rem] font-heading font-semibold leading-none group-hover:text-white transition-colors duration-300">
                         /{service.id}
@@ -73,7 +123,7 @@ export default function Service() {
                     </div>
                   </Link>
                   <div
-                    className="hover__reveal-bg absolute top-0 left-0 w-[346px] h-[406px] opacity-0 -mt-[150px] -ml-[150px] overflow-hidden pointer-events-none bg-center bg-cover bg-no-repeat transition-all duration-500 z-5 rounded-lg hidden lg:block group-hover:opacity-100"
+                    className="hover__reveal-bg absolute top-0 left-0 w-[346px] h-[406px] opacity-0 -mt-[150px] -ml-[150px] overflow-hidden pointer-events-none bg-center bg-cover bg-no-repeat transition-opacity duration-300 z-20 rounded-lg hidden lg:block"
                     style={{ backgroundImage: `url(${service.bg})` }}
                   ></div>
                 </div>

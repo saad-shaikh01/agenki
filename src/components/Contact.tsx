@@ -31,29 +31,16 @@ export default function Contact() {
             opacity: 0,
           },
           {
-            y: 170, // This logic is from custom-gsap.js but the layout might differ in Next.js structure. Let's adjust if needed.
-            // Actually, in the original HTML structure, there was a specific `.video-button` element.
-            // In my `Contact.tsx`, I have `.tw-hover-btn-wrapper`.
-            // Let's target `.tw-hover-btn-wrapper` with a class alias if needed.
-            // Or just target the wrapper directly.
-            // Since the button is in the corner, `y: 170` might push it too far down or look weird if not exactly positioned.
-            // But the prompt asked for "exact animations".
-            // The original code targeted `.video-button`.
-            // Let's assume the button in `Contact.tsx` is the one.
+            y: 170,
             opacity: 1,
             duration: 1.6,
           }
         );
       }
 
-      // Title animation (from 01. Section title Animation Js if class exists, or 11. about splitText Js logic)
-      // The contact title has `tw-char-animation` class in legacy.
-      // I should add `tw-char-animation` class to the title in `Contact.tsx` and implement the split text logic.
-      // Since I don't have SplitText, I'll use a simple fade up for now, or the manual split I used in `About.tsx`.
-
+      // Title animation
       const title = document.querySelector(".contact-two-title");
       if (title) {
-        // Just fade up whole words for simplicity and performance without plugin
         gsap.fromTo(
           ".contact-two-title",
           { y: 50, opacity: 0 },
@@ -68,6 +55,59 @@ export default function Contact() {
           }
         );
       }
+
+      // 03. Position Aware button hover Js & 05. button hover animation Js
+      // Applying to .tw-hover-btn
+      const hoverBtns = gsap.utils.toArray(".tw-hover-btn-wrapper");
+      const hoverBtnItem = gsap.utils.toArray(".tw-hover-btn-item");
+
+      hoverBtns.forEach((btn: any, i) => {
+        btn.addEventListener("mousemove", (e: MouseEvent) => {
+          parallaxIt(e, hoverBtnItem[i], 60);
+        });
+
+        function parallaxIt(e: MouseEvent, target: any, movement: number) {
+          const relX =
+            e.pageX - btn.getBoundingClientRect().left - window.scrollX;
+          const relY =
+            e.pageY - btn.getBoundingClientRect().top - window.scrollY;
+
+          gsap.to(target, {
+            duration: 1,
+            x: ((relX - btn.offsetWidth / 2) / btn.offsetWidth) * movement,
+            y: ((relY - btn.offsetHeight / 2) / btn.offsetHeight) * movement,
+            ease: "power2.out",
+          });
+        }
+
+        btn.addEventListener("mouseleave", () => {
+          gsap.to(hoverBtnItem[i], {
+            duration: 1,
+            x: 0,
+            y: 0,
+            ease: "power2.out",
+          });
+        });
+
+        // Dot movement (05. button hover animation Js)
+        const dot = btn.querySelector(".tw-btn-circle-dot");
+        if (dot) {
+          btn.addEventListener("mouseenter", (e: MouseEvent) => {
+            const x =
+              e.pageX - btn.getBoundingClientRect().left - window.scrollX;
+            const y =
+              e.pageY - btn.getBoundingClientRect().top - window.scrollY;
+            gsap.set(dot, { left: x, top: y });
+          });
+          btn.addEventListener("mouseout", (e: MouseEvent) => {
+            const x =
+              e.pageX - btn.getBoundingClientRect().left - window.scrollX;
+            const y =
+              e.pageY - btn.getBoundingClientRect().top - window.scrollY;
+            gsap.set(dot, { left: x, top: y });
+          });
+        }
+      });
     },
     { scope: container }
   );
@@ -90,7 +130,7 @@ export default function Contact() {
             </div>
           </div>
           <div className="w-full xl:w-2/12">
-            <div className="tw-hover-btn-wrapper inline-block mt-8 xl:mt-[30px] video-button-target">
+            <div className="tw-hover-btn-wrapper inline-block mt-8 xl:mt-[30px] video-button-target relative">
               <Link
                 className="tw-btn-circle tw-hover-btn-item bg-main-two-600 border-2 border-white tw-hover-btn w-[161px] h-[161px] leading-none inline-flex items-center justify-center rounded-full relative overflow-hidden group"
                 href="#"
@@ -118,7 +158,7 @@ export default function Contact() {
                     Contact Us <br /> Today!
                   </span>
                 </span>
-                <i className="tw-btn-circle-dot bg-white absolute left-[42px] bottom-[-15px] w-5 h-5 rounded-full bg-main-600 -translate-x-1/2 -translate-y-1/2 z-0 group-hover:w-[420px] group-hover:h-[420px] transition-all duration-500"></i>
+                <i className="tw-btn-circle-dot bg-white absolute left-[42px] bottom-[-15px] w-5 h-5 rounded-full bg-main-600 -translate-x-1/2 -translate-y-1/2 z-0 group-hover:w-[420px] group-hover:h-[420px] transition-all duration-500 pointer-events-none"></i>
               </Link>
             </div>
           </div>

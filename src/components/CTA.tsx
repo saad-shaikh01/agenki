@@ -14,25 +14,26 @@ export default function CTA() {
   useGSAP(
     () => {
       // 07. cta animation Js
-      // .tw-cta-title-1 { x: '-15%' } and .tw-cta-title-2 { x: '10%' }
-      // The JSX below doesn't have these classes yet, I need to add them to mimic the exact animation targets if applicable.
-      // However, the legacy code seems to target specific classes `.tw-cta-title-1` etc. which might be from a different section or this one.
-      // In `cta-two-area`, the title is `.cta-two-title`.
-      // Let's assume standard scroll trigger animations for this section as found in typical setups if exact match isn't clear from the snippet provided in `custom-gsap.js`.
-      // Wait, `custom-gsap.js` has "07. cta animation Js" targeting `.cta-area`, but this is `cta-two-area`.
-      // There might be no specific GSAP for `cta-two-area` in the provided JS snippet other than maybe generic ones.
-      // But let's look at `10. project sticky Js`.
-      // `11. about splitText Js`.
-      // `12. thumbnail zoom`.
-      // `19. video button Js`.
+      if (document.querySelector(".cta-two-area")) {
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: ".cta-two-area",
+              start: "top 100%",
+              end: "bottom 20%",
+              scrub: true,
+              invalidateOnRefresh: true,
+            },
+          })
+          .to(".tw-cta-title-1", {
+            x: "-15%",
+          });
+        gsap.set(".tw-cta-title-1", {
+          x: "10%",
+        });
+      }
 
-      // Let's check "19. video button Js".
-      // It targets `.video-button`.
-      // The `CTA` component has a button, but it is `.cta-two-button`.
-      // The `Contact` component has `.video-content` and maybe a button.
-      // Let's look at `Contact.tsx`. It has `.tw-hover-btn-item`.
-
-      // For `CTA.tsx`, standard fade ins.
+      // Standard fade ups for images
       gsap.from(".cta-two-thumb.one", {
         y: 50,
         opacity: 0,
@@ -52,6 +53,54 @@ export default function CTA() {
           trigger: ".cta-two-thumb.two",
           start: "top 80%",
         },
+      });
+
+      // 05. button hover animation Js (Parallax)
+      // & 03. Position Aware button hover Js
+      // Applying to .tw-hover-btn
+      const hoverBtns = gsap.utils.toArray(".tw-hover-btn-wrapper");
+      const hoverBtnItem = gsap.utils.toArray(".tw-hover-btn-item");
+
+      hoverBtns.forEach((btn: any, i) => {
+        btn.addEventListener("mousemove", (e: MouseEvent) => {
+          parallaxIt(e, hoverBtnItem[i], 60);
+        });
+
+        function parallaxIt(e: MouseEvent, target: any, movement: number) {
+          const relX = e.pageX - btn.getBoundingClientRect().left - window.scrollX;
+          const relY = e.pageY - btn.getBoundingClientRect().top - window.scrollY;
+
+          gsap.to(target, {
+            duration: 1,
+            x: ((relX - btn.offsetWidth / 2) / btn.offsetWidth) * movement,
+            y: ((relY - btn.offsetHeight / 2) / btn.offsetHeight) * movement,
+            ease: "power2.out",
+          });
+        }
+
+        btn.addEventListener("mouseleave", () => {
+          gsap.to(hoverBtnItem[i], {
+            duration: 1,
+            x: 0,
+            y: 0,
+            ease: "power2.out",
+          });
+        });
+
+        // Dot movement (05. button hover animation Js)
+        const dot = btn.querySelector('.tw-btn-circle-dot');
+        if(dot) {
+             btn.addEventListener("mouseenter", (e: MouseEvent) => {
+                const x = e.pageX - btn.getBoundingClientRect().left - window.scrollX;
+                const y = e.pageY - btn.getBoundingClientRect().top - window.scrollY;
+                gsap.set(dot, { left: x, top: y });
+             });
+             btn.addEventListener("mouseout", (e: MouseEvent) => {
+                const x = e.pageX - btn.getBoundingClientRect().left - window.scrollX;
+                const y = e.pageY - btn.getBoundingClientRect().top - window.scrollY;
+                gsap.set(dot, { left: x, top: y });
+             });
+        }
       });
     },
     { scope: container }
@@ -77,7 +126,7 @@ export default function CTA() {
                   />
                 </div>
                 <div>
-                  <h4 className="cta-two-title text-heading text-[3.1rem] lg:text-[4rem] xl:text-[5rem] leading-none mb-8 font-heading font-semibold text-white md:text-heading">
+                  <h4 className="cta-two-title tw-cta-title-1 text-heading text-[3.1rem] lg:text-[4rem] xl:text-[5rem] leading-none mb-8 font-heading font-semibold text-white md:text-heading">
                     Dedicated to Transforming Your Ideas Into Impactful Digital
                   </h4>
                   <p className="pb-10 font-medium text-white md:text-heading">
@@ -85,9 +134,9 @@ export default function CTA() {
                     innovators dedicated to crafting unique digital experiences
                     – With a focus on creativity and a commitment to excellence.
                   </p>
-                  <div className="cta-two-button">
+                  <div className="cta-two-button tw-hover-btn-wrapper inline-block">
                     <Link
-                      className="theme-btn-main inline-flex items-center relative transition-all group"
+                      className="theme-btn-main tw-hover-btn-item inline-flex items-center relative transition-all group"
                       href="#"
                     >
                       <span className="theme-btn-arrow-left w-14 h-14 leading-none inline-flex justify-center items-center bg-main-two-600 text-white rounded-full absolute transition-all duration-300 scale-0 group-hover:scale-100 left-0">
@@ -170,7 +219,7 @@ export default function CTA() {
                       </span>
                     </div>
                     <div>
-                      <h4 className="cta-two-sm-title text-heading text-[2.25rem] xl:text-[3.25rem] text-white md:text-heading font-heading font-semibold">
+                      <h4 className="cta-two-sm-title tw-cta-title-2 text-heading text-[2.25rem] xl:text-[3.25rem] text-white md:text-heading font-heading font-semibold">
                         SOX compliance
                       </h4>
                       <p className="font-medium text-white md:text-heading">

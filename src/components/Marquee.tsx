@@ -1,4 +1,15 @@
+"use client";
+
+import { useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(ScrollTrigger);
+
 export default function Marquee() {
+  const container = useRef(null);
+
   const items = [
     { text: "DIGITAL", icon: "/images/icons/maquee-two-icon.svg" },
     { text: "CREATIVE", icon: "/images/icons/maquee-two-icon.svg" },
@@ -10,9 +21,43 @@ export default function Marquee() {
     { text: "CREATIVE", icon: "/images/icons/maquee-two-icon.svg" },
   ];
 
+  useGSAP(
+    () => {
+      // 06. maquee bg animation Js
+      const marqueeBg = document.querySelector(".maquee-bg");
+      if (marqueeBg) {
+        const img = marqueeBg.querySelector("img");
+        if (img) {
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: marqueeBg,
+              scrub: true,
+              pin: false,
+            },
+          });
+          tl.fromTo(
+            img,
+            {
+              yPercent: -20,
+              ease: "none",
+            },
+            {
+              yPercent: 20,
+              ease: "none",
+            }
+          );
+        }
+      }
+    },
+    { scope: container }
+  );
+
   return (
     <>
-      <section className="maquee-area maquee-two-area overflow-hidden bg-main-three-600 relative z-2 py-[50px] pb-[37px]">
+      <section
+        className="maquee-area maquee-two-area overflow-hidden bg-main-three-600 relative z-2 py-[50px] pb-[37px]"
+        ref={container}
+      >
         <div className="maquee-slider overflow-hidden">
           <div className="flex items-center whitespace-nowrap animate-marquee">
             {/* Repeated items for continuous loop */}
@@ -27,8 +72,15 @@ export default function Marquee() {
                   </span>
                 </div>
                 <div className="maquee-content">
-                  <h5 className={`maquee-title maquee-two-title text-heading text-[6.25rem] uppercase font-bold mb-0 leading-none ${index % 2 !== 0 ? 'text-transparent' : ''}`}
-                    style={index % 2 !== 0 ? { WebkitTextStroke: '1px hsl(240, 46%, 5%)' } : {}}
+                  <h5
+                    className={`maquee-title maquee-two-title text-heading text-[6.25rem] uppercase font-bold mb-0 leading-none ${
+                      index % 2 !== 0 ? "text-transparent" : ""
+                    }`}
+                    style={
+                      index % 2 !== 0
+                        ? { WebkitTextStroke: "1px hsl(240, 46%, 5%)" }
+                        : {}
+                    }
                   >
                     {item.text}
                   </h5>
@@ -39,7 +91,7 @@ export default function Marquee() {
         </div>
       </section>
 
-      <div className="maquee-bg relative z-1">
+      <div className="maquee-bg relative z-1 overflow-hidden">
         <img
           className="w-full h-[735px] object-cover"
           src="/images/thumbs/video-bg.jpg"
